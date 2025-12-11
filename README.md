@@ -1,4 +1,4 @@
-# BF6 Portal Mod Template
+# BF6 Portal Scripting Template
 
 This is the starter template for creating Battlefield 6 Portal Mods using TypeScript.
 
