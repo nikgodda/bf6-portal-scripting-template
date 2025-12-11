@@ -1,0 +1,12 @@
+{
+  "debug": {
+    "player": {
+      "deployed": "Example player deployed: {}",
+      "died": "Example player died: {}"
+    },
+    "gamemode": {
+      "started": "Example game mode Started!",
+      "ongoing": "Example game mode throttled Ongoing..."
+    }
+  }
+}
