@@ -53,7 +53,7 @@ Updating the framework does **not** modify your mod code — only the tooling.
 
 ---
 
-# 📁 Project Structure
+# 📁 Project Structure (WILL BE UPDATED SOON...)
 
 ```txt
 SDK/
