@@ -1,172 +1,52 @@
 # BF6 Portal Mod Template
 
-A fully featured starter template for building Battlefield 6 Portal Mods using the `bf6-portal-mod-framework`.
+This is the official starter template for creating Battlefield 6 Portal Mods using TypeScript.
 
-This template includes:
+It provides:
 
-- BF6 SDK typings (`SDK/mod`, `SDK/modlib`)
-- Clean project structure
-- Merge + Watch tooling via `bf6mod` CLI
-- Extendable GameMode architecture
-- Automatic duplicate identifier checking during merge
-- Manual `update-sdk` script to refresh typings
+-   clean project structure
+-   ready main.ts and AGameMode
+-   SDK typings
+-   automatic merging into \_\_SCRIPT.ts
+-   automatic string generation into \_\_STRINGS.json
+-   integration with bf6-portal-mod-framework
 
 ---
 
-# 🚀 Quick Start
+# 🧱 Project Structure
 
-Copy the template into a new folder:
+```
+my-mod/
+│   package.json
+│   tsconfig.json
+│   __SCRIPT.ts
+│   __STRINGS.json
+│
+├─ SDK/
+│   ├─ mod/
+│   └─ modlib/
+│
+└─ src/
+    ├─ main.ts
+    ├─ Core/
+    │    └─ AGameMode.ts
+    └─ GameModes/
+         (your modes here)
+```
+
+---
+
+# 🚀 Installation
 
 ```bash
-npx degit nikgodda/bf6-portal-mod-template my-mod
-cd my-mod
 npm install
 ```
 
-This creates a clean mod project you fully own.
-
 ---
 
-# 🔧 Framework Dependency
+# ⚙ Commands
 
-This template relies on the **bf6-portal-mod-framework**, which provides:
-
-- the merge system  
-- the file watcher  
-- the CLI (`bf6mod`)  
-- the SDK updater  
-- project build logic  
-
-To update the framework to the latest version:
-
-```bash
-npm update bf6-portal-mod-framework
-```
-
-Or to force the absolute newest version from npm:
-
-```bash
-npm install bf6-portal-mod-framework@latest --save-dev
-```
-
-Updating the framework does **not** modify your mod code — only the tooling.
-
----
-
-# 📁 Project Structure (WILL BE UPDATED SOON...)
-
-```txt
-SDK/
-│
-├─ mod/
-└─ modlib/
-
-src/
-│
-├─ main.ts
-│
-├─ Core/
-│   └─ AGameMode.ts
-│        
-└─ GameModes/
-    └─ Example/
-         └─ ExampleGameMode.ts
-
-__MERGED.ts
-```
-
-Below is an example of a **larger, fully modular project structure** you can create:
-
-```txt
-src/
-│
-├─ Core/
-│  ├─ AGameMode.ts
-│  └─ Player/
-│       ├─ APlayerBase.ts
-│       ├─ APlayerManager.ts
-│       ├─ PlayerHuman.ts
-│       └─ AI/
-│            ├─ AbstractAI.ts
-│            ├─ AIRoamer.ts
-│            └─ AITypes.ts
-│
-├─ GameModes/
-│  └─ TDM/
-│       ├─ TDMGameMode.ts
-│       └─ TDMPlayerManager.ts
-│
-└─ main.ts
-```
-
----
-
-# 🧠 How It Works
-
-## `AGameMode`
-Base class providing all BF6 event callbacks, such as:
-
-- onGameModeStarted  
-- onPlayerJoinGame  
-- onPlayerDeployed  
-- onPlayerDied  
-- and more  
-
-## `TDMGameMode`
-An example game mode implementation located in:
-
-```txt
-src/GameModes/TDM/TDMGameMode.ts
-```
-
-Example:
-
-```ts
-onGameModeStarted() {
-  console.log("Great Mod")
-}
-```
-
-## `main.ts`
-Bridges BF6 Engine event callbacks into your active GameMode.
-
-This file is the entry point used by the merge tool.
-
----
-
-# 🔒 Merge Script Safety
-
-The merge process includes **automatic duplicate identifier detection**.
-
-It prevents broken merged output by stopping when two files declare the same name:
-
-- class  
-- abstract class  
-- interface  
-- type  
-- enum  
-- const  
-- let  
-- var  
-
-Example error:
-
-```txt
-❌ MERGE ERROR: Duplicate top-level identifier detected!
-Identifier: AGameMode
-Kind: class
-
-First found in: src/Core/AGameMode.ts
-Found again in: src/GameModes/TDM/TDMGameMode.ts
-```
-
-This guarantees the final merged output is always safe for Portal.
-
----
-
-# 🛠 Commands
-
-### Build the merged output
+### Build (merge + strings)
 
 ```bash
 npm run build
@@ -174,53 +54,213 @@ npm run build
 
 Produces:
 
-```txt
-__MERGED.ts
 ```
-
-Paste the contents into the BF6 Portal Mod Editor.
+__SCRIPT.ts
+__STRINGS.json
+```
 
 ---
 
-### Watch mode (auto-merge on save)
+### Watch (merge only)
 
 ```bash
 npm run watch
 ```
 
-Rebuilds `__MERGED.ts` whenever files in `src/` change.
-
 ---
 
-### Update SDK typings
+### Update SDK
 
 ```bash
 npm run update-sdk
 ```
 
-Downloads the latest BF6 SDK typings into:
+---
 
-```txt
-SDK/mod
-SDK/modlib
+# 🎮 How Mods Run
+
+main.ts:
+
+```ts
+import { MyGameMode } from './GameModes/MyGameMode'
+export const gameMode = new MyGameMode()
 ```
 
 ---
 
-# ✨ Customization
+# 💬 Strings System
 
-Add new `.ts` files anywhere under `src/`.
+Generates:
 
-The merge tool automatically includes:
+```
+__STRINGS.json
+```
 
-- new gameplay systems  
-- AI helpers  
-- player management  
-- utilities  
-- UI logic  
-- any feature your mod requires  
+Supports:
 
-Everything becomes part of the final merged script.
+-   static keys
+-   parameters
+-   mod.stringkeys
+-   dynamic template literal references
+-   annotation-based dynamic values
+
+---
+
+## 1️⃣ Static Strings
+
+```ts
+mod.Message('hello')
+```
+
+Produces:
+
+```json
+{
+    "hello": "hello"
+}
+```
+
+---
+
+### With Parameters
+
+```ts
+mod.Message('static.messageWithParams', 1)
+```
+
+Produces:
+
+```json
+{
+    "static": {
+        "messageWithParams": "static.messageWithParams {}"
+    }
+}
+```
+
+---
+
+### Static StringKey
+
+```ts
+mod.stringkeys.static.stringkey
+```
+
+Produces:
+
+```json
+{
+    "static": {
+        "stringkey": "static.stringkey"
+    }
+}
+```
+
+---
+
+## 2️⃣ Dynamic Strings (Correct Behavior)
+
+Dynamic strings do not produce keys:
+
+```ts
+mod.Message(`ai.bots.${i}`)
+```
+
+Only annotations do:
+
+```ts
+// @stringkeys ai.bots: 0..3
+mod.Message(`ai.bots.${i}`)
+```
+
+Generates:
+
+```json
+{
+    "ai": {
+        "bots": {
+            "0": "ai.bots.0",
+            "1": "ai.bots.1",
+            "2": "ai.bots.2",
+            "3": "ai.bots.3"
+        }
+    }
+}
+```
+
+---
+
+## 3️⃣ @stringkeys Annotation
+
+Examples:
+
+```ts
+// @stringkeys ui.buttons: OK, Cancel, Retry
+// @stringkeys ai.state: Idle, Roam, Fight
+// @stringkeys ai.bots: 0..3
+// @stringkeys rank: A..F
+```
+
+Always generates nested output.
+
+---
+
+## 🔥 Full Example
+
+Code:
+
+```ts
+mod.Message(`test`)
+mod.Message(`static.message`)
+mod.Message(`static.messageWithParams`, 1)
+mod.stringkeys.static.stringkey
+
+// @stringkeys dynamic.range: 1..2
+mod.Message(`dynamic.range.${i}`)
+
+// @stringkeys dynamic.list: Idle, Roam, Fight
+mod.Message(`dynamic.list.${state}`)
+```
+
+Output:
+
+```json
+{
+    "dynamic": {
+        "range": {
+            "1": "dynamic.range.1",
+            "2": "dynamic.range.2"
+        },
+        "list": {
+            "Idle": "dynamic.list.Idle",
+            "Roam": "dynamic.list.Roam",
+            "Fight": "dynamic.list.Fight"
+        }
+    },
+    "test": "test",
+    "static": {
+        "message": "static.message",
+        "messageWithParams": "static.messageWithParams {}",
+        "stringkey": "static.stringkey"
+    }
+}
+```
+
+---
+
+# 🧩 Framework Reference
+
+Framework repo:
+
+https://github.com/nikgodda/bf6-portal-mod-framework
+
+The template maps npm scripts to the framework:
+
+```
+npm run build       → bf6mod build
+npm run watch       → bf6mod watch
+npm run update-sdk  → bf6mod update-sdk
+```
 
 ---
 
